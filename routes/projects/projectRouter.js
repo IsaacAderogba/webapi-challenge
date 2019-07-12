@@ -14,8 +14,13 @@ router.post('/', validateProject, async (req, res) => {
 })
 
 // GET
-router.get('/', (req, res) => {
-  res.send('api/projects/ get')
+router.get('/', async (req, res) => {
+  try {
+    const projects = await Projects.get();
+    res.status(200).json(projects)
+  } catch (err) {
+    res.status(500).json({error: err.message})
+  }
 })
 
 router.get('/:id', validateProjectId, (req, res) => {
