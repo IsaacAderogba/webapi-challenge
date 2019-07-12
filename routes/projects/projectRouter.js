@@ -13,22 +13,22 @@ router.get('/', (req, res) => {
   res.send('api/projects/ get')
 })
 
-router.get('/:id', (req, res) => {
+router.get('/:id', validateProjectId, (req, res) => {
   res.send('api/projects/:id get')
 })
 
 // PUT
-router.put('/:id', validateProject, (req, res) => {
+router.put('/:id', validateProjectId, validateProject,  (req, res) => {
   res.send('api/projects/:id put')
 })
 
 // DELETE
-router.delete('/:id', (req, res) => {
+router.delete('/:id', validateProjectId, (req, res) => {
   res.send('api/projects/:id del')
 })
 
-// validate post
-async function validateProject(req, res, next) {
+// validate post middleware
+function validateProject(req, res, next) {
   const { name, description } = req.body;
 
   if (Object.keys(req.body).length === 0) {
@@ -40,6 +40,26 @@ async function validateProject(req, res, next) {
     next();
   }
 }
-// validateID
+// validateID middleware
+async function validateProjectId(req, res, next) {
+  const { id } = req.params;
+  if (Number.isInteger(parseInt(id, 10))) {
+    try {
+      const project = await Projects.get(id);
+      if (project) {
+        req.project = project;
+        next();
+      } else {
+        res
+          .status(404)
+          .json({ message: `The project with Id of '${id}' could not be found` });
+      }
+    } catch {
+      res.status(500).json({ message: "The project could not be retrieved" });
+    }
+  } else {
+    res.status(400).json({ message: `The Id of '${id}' is not valid` });
+  }
+}
 
 module.exports = router;
