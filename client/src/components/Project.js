@@ -15,8 +15,6 @@ const Project = (props) => {
     fetchData();
   }, [])
 
-  console.log(project);
-
   if(Object.keys(project).length === 0) {
     return <p>Loading...</p>
   }
