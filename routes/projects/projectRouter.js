@@ -33,8 +33,13 @@ router.get('/:id', validateProjectId, async (req, res) => {
 })
 
 // PUT
-router.put('/:id', validateProjectId, validateProject,  (req, res) => {
-  res.send('api/projects/:id put')
+router.put('/:id', validateProjectId, validateProject, async (req, res) => {
+  try {
+    const updatedProject = await Projects.update(req.params.id, req.newProject);
+    res.status(200).json(updatedProject)
+  } catch (err) {
+    res.status(500).json({message: err.message})
+  }
 })
 
 // DELETE
