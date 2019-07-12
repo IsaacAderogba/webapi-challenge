@@ -9,7 +9,7 @@ router.post('/', validateProject, async (req, res) => {
     const createdProject = await Projects.insert(req.newProject);
     res.status(201).json(createdProject);
   } catch (err) {
-    res.status(500).json({error: err.message})
+    res.status(500).json({message: err.message})
   }
 })
 
@@ -19,12 +19,17 @@ router.get('/', async (req, res) => {
     const projects = await Projects.get();
     res.status(200).json(projects)
   } catch (err) {
-    res.status(500).json({error: err.message})
+    res.status(500).json({message: err.message})
   }
 })
 
-router.get('/:id', validateProjectId, (req, res) => {
-  res.send('api/projects/:id get')
+router.get('/:id', validateProjectId, async (req, res) => {
+  try {
+    const project = await Projects.get(req.params.id);
+    res.status(200).json(project)
+  } catch (err) {
+    res.status(500).json({message: err.message})
+  }
 })
 
 // PUT
