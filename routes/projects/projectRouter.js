@@ -4,7 +4,7 @@ const Projects = require('../../data/helpers/projectModel')
 const router = express.Router();
 
 // POST
-router.post('/', (req, res) => {
+router.post('/', validateProject, (req, res) => {
   res.send('api/projects/ post')
 })
 
@@ -18,7 +18,7 @@ router.get('/:id', (req, res) => {
 })
 
 // PUT
-router.put('/:id', (req, res) => {
+router.put('/:id', validateProject, (req, res) => {
   res.send('api/projects/:id put')
 })
 
@@ -28,6 +28,18 @@ router.delete('/:id', (req, res) => {
 })
 
 // validate post
+async function validateProject(req, res, next) {
+  const { name, description } = req.body;
+
+  if (Object.keys(req.body).length === 0) {
+    res.status(400).json({ message: "Missing project data" });
+  } else if (!name || !description) {
+    res.status(400).json({ message: "Missing required name or description field" });
+  } else {
+    req.project = { name, description }
+    next();
+  }
+}
 // validateID
 
 module.exports = router;
