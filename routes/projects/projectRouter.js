@@ -4,8 +4,13 @@ const Projects = require('../../data/helpers/projectModel')
 const router = express.Router();
 
 // POST
-router.post('/', validateProject, (req, res) => {
-  res.send('api/projects/ post')
+router.post('/', validateProject, async (req, res) => {
+  try {
+    const createdProject = await Projects.insert(req.newProject);
+    res.status(201).json(createdProject);
+  } catch (err) {
+    res.status(500).json({error: err.message})
+  }
 })
 
 // GET
@@ -36,7 +41,7 @@ function validateProject(req, res, next) {
   } else if (!name || !description) {
     res.status(400).json({ message: "Missing required name or description field" });
   } else {
-    req.project = { name, description }
+    req.newProject = { name, description }
     next();
   }
 }
