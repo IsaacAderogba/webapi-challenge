@@ -1,7 +1,7 @@
 import React from "react";
 import { Route } from 'react-router-dom';
 import Projects from './components/Projects'
-import Action from './components/Action'
+import Project from './components/Project'
 import "./App.css";
 
 function App() {
@@ -10,8 +10,8 @@ function App() {
       <header className="App-header">
         <Route exact path="/" component={Projects} />
         <Route
-          path="/actions/:id"
-          render={routeProps => <Action {...routeProps} />}
+          path="/project/:id"
+          render={routeProps => <Project {...routeProps} />}
         />
       </header>
     </div>
